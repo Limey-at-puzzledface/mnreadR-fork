@@ -24,13 +24,10 @@
 #'   \item Estimates from the NLME fit can be plotted with \code{\link{nlmeCurve}}
 #'   }
 #'
-#' @section Notes
+#' @section Notes:
 #' Feel free to email me at \email{aurelie.calabrese@univ-amu.fr} if you have any questions or spot any bugs! 
 #'
-#' @section Contact
+#' @section Contact:
 #' Aur\'elie Calabr\`ese - \email{aurelie.calabrese@univ-amu.fr}
 #'
-#' @docType package
-#' @name mnreadR
-NULL
-#> NULL
+"_PACKAGE"

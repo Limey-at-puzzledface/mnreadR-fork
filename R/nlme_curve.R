@@ -185,7 +185,8 @@ nlmeCurve <- function(nlme.model, displayCPS = TRUE, CPScriterion = NULL) {
   if ( missing(CPScriterion) )  {
     CPS_crit = 0.90 }
   else {
-    CPS_crit = CPScriterion }
+    CPS_crit = CPScriterion 
+  }
   
   # get Maximum Reading Speed (MRS) and Critical Print Size (CPS)
   nlme.estimates <- my.coef %>% 
@@ -206,12 +207,11 @@ nlmeCurve <- function(nlme.model, displayCPS = TRUE, CPScriterion = NULL) {
                          sec.axis = sec_axis(~ log10(.), 
                                              name = "Reading Speed (log words/min)"))
   p <- p + annotation_logticks(sides = "l", alpha = 0.4) 
-  # to invert the left and right y-axes, I must set the folowing options:
+  # to invert the left and right y-axes, I must set the following options:
   # scale_y_log10(position = "right") & annotation_logticks(sides = "r")
   
   # plot a non-nested design 
   if ( "nested_var" %in% names(nlme.model[[1]]) == FALSE  ) { 
-    
     # extract the fitted values
     # add rows with missing data for incomplete datasets
     if (max_CPS > max(nlme.model[[1]]$correct_ps)) {
@@ -227,25 +227,31 @@ nlmeCurve <- function(nlme.model, displayCPS = TRUE, CPScriterion = NULL) {
     # extract the fixed effects predictions at the subject level 
     fitted_df <- predict(nlme.model[[2]], full_data_to_plot, level = 0:1) # 0 = populations; 1 = subject
     # merge the fitted data with raw data saved as nlme.model[[1]]
+    
+    # JK This is where
+    # New names:
+    #   • `subject` -> `subject...1`
+    #   • `subject` -> `subject...3`
+    # comes from.  Multiple rows per subject, and different number of rows, so correct join is not obvious.
     full_fitted_df <- bind_cols(full_data_to_plot, fitted_df) %>%
       filter (predict.subject >= 0)
-    
     # plot the fitted curve
     p <- p + geom_line(aes(x = correct_ps, y = 10^predict.subject), 
-                       size=1, alpha=0.7, show.legend = FALSE,
+                       linewidth = 1, alpha = 0.7, show.legend = FALSE,
                        data = full_fitted_df)
-    
     # plot the raw data
     if ( "group_var" %in% names(nlme.model[[1]]) == FALSE ) { 
-      p <- p + geom_point() }
+      p <- p + geom_point()
+    }
     else {  
-      p <- p + geom_point(aes(shape = group_var)) }
-    
+      p <- p + geom_point(aes(shape = group_var)) 
+    }
     # add CPS
     if ( displayCPS == TRUE )  {
       p <- p + geom_point(aes(x = CPS, y = MRS),
                           shape = 25, size = 3, fill = "red",
-                          data = nlme.estimates) }
+                          data = nlme.estimates) 
+    }
     else {  }
     
     
@@ -253,7 +259,6 @@ nlmeCurve <- function(nlme.model, displayCPS = TRUE, CPScriterion = NULL) {
   
   # plot a nested design 
   if ( "nested_var" %in% names(nlme.model[[1]]) == TRUE ) {
-    
     # extract the fitted values
     # add rows with missing data for incomplete datasets
     if (max_CPS > max(nlme.model[[1]]$correct_ps)) {
@@ -274,20 +279,23 @@ nlmeCurve <- function(nlme.model, displayCPS = TRUE, CPScriterion = NULL) {
     
     # plot the fitted curve
     p <- p + geom_line(aes(x = correct_ps, y = 10^predict.nested_var, colour = nested_var), 
-                       size=1, alpha=0.7, show.legend = FALSE,
+                       linewidth = 1, alpha = 0.7, show.legend = FALSE,
                        data = full_fitted_df)
     
     # plot the raw data
     if ( "group_var" %in% names(nlme.model[[1]]) == FALSE ) {
-      p <- p + geom_point(aes(colour = nested_var)) }
+      p <- p + geom_point(aes(colour = nested_var)) 
+    }
     else {
-      p <- p + geom_point(aes(colour = nested_var, shape = group_var)) }
+      p <- p + geom_point(aes(colour = nested_var, shape = group_var)) 
+    }
     
     # add CPS
     if ( displayCPS == TRUE )  {
       p <- p + geom_point(aes(x = CPS, y = MRS, fill = nested_var),
                           shape = 25, size = 3,
-                          data = nlme.estimates) }
+                          data = nlme.estimates) 
+    }
     else {  }
     
     
